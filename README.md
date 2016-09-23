@@ -1,2 +1,2 @@
-# odata-reader
-Read Odata from San Jose API and display it for consumption.
+# OData-Reader
+This project was born out of (this)[https://github.com/codeforsanjose/Project-Ideas/issues/86] issue posted in project ideas
