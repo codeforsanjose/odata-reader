@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+  <span id="odataButton" style="cursor: pointer; text-decoration: underline">
+    Make A Request
+  </span>
+  <script type="text/javascript">
+  (function() {
+  var httpRequest;
+  var host = 'api.data.sanjoseca.gov/';
+  var path = 'api/v2/datastreams/';
+  var guid = 'LAST-30-DAYS-PLANN-PERMI/';
+  var format = 'data.ajson/';
+  var apiKey = 'a9de7dec8981602ca18f26ff6a8a69d6e0ad322d';
+  var limit = 50;
+  
+  document.getElementById('odataButton').onclick = function() { makeRequest('http://' + host + path + guid + format + '?' + 'auth_key=' + apiKey + '&' + 'limit=' + limit); };
+
+  function makeRequest(url) {
+    httpRequest = new XMLHttpRequest();
+
+    if (!httpRequest) {
+      alert('NO!');
+      return false;
+    }
+
+    httpRequest.onreadystatechange = showDataInTable;
+    httpRequest.open('GET', url, true);
+    httpRequest.setRequestHeader('Content-Type', 'application/json');
+    httpRequest.send();
+    console.log(url);
+  }
+
+  function showData() {
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) {
+        var div = document.createElement('DIV');
+        div.style.color = 'red';
+        document.body.appendChild(div);
+        var response = JSON.parse(httpRequest.responseText);
+        div.innerHTML = response.result;
+      } else {
+        alert('No data');
+      }
+    }
+  }
+  
+  function showDataInTable() {
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) {
+        var table = document.createElement('TABLE');
+        var response = JSON.parse(httpRequest.responseText);
+        var odataColumnNames = response.result[0];
+        var odataResult = response.result;
+        var row = table.insertRow(0);
+        
+        for (var i = 0; i < odataColumnNames.length; i++) {
+          var th = document.createElement('TH');
+          th.innerHTML = odataColumnNames[i];
+          th.style.border = 'thin solid #000000';
+          row.appendChild(th);
+        }
+        
+        for (var i = 1; i < odataResult.length; i++) {
+          var dataRow = table.insertRow(i);
+          
+          var data = odataResult[i];
+          
+          for (var j = 0; j < data.length; j++) {
+            var cell = dataRow.insertCell(j);
+            cell.innerHTML = data[j];
+            cell.style.border = 'thin solid #000000';
+          }
+        }
+        
+        table.style.border = 'thin solid #000000';
+        document.body.appendChild(table);
+        
+      } else {
+        alert('No data');
+      }
+    }
+  }
+
+  })();
+  </script>
+</body>
+</html>
